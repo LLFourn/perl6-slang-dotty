@@ -1,3 +1,4 @@
+use v6;
 use lib 'lib';
 use Slang::Dotty '~>','<(^_^)>';
 use Test;
@@ -7,8 +8,12 @@ sub infix:«~>» ($obj,$method,|args){
 }
 
 sub infix:«<(^_^)>»($obj,$method,|args) {
-    $obj."$method"(|args);
+    q|(>'-')> ^('-')^|
+    ~ $obj."$method"(|args)
+    ~ q|<('-'<) (>'-')>|;
 }
 
-ok "hello"~>uc eq "HELLO", "~> works";
-ok "hello"<(^_^)>uc eq "HELLO","<(^_^)> works";
+my $string = "hello world";
+ok $string~>uc eq "HELLO WORLD", "~> works";
+ok $string<(^_^)>subst("world","kirby")~>uc eq
+    "(>'-')> ^('-')^HELLO KIRBY<('-'<) (>'-')>","<(^_^)> works";
