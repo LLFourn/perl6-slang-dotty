@@ -3,7 +3,7 @@ use QAST:from<NQP>;
 sub EXPORT(*@ops){
 
     my $gram = role Dotty::Slang::Grammar {};
-    my $role =  role Dotty::Slang::Actions {};
+    my $actions =  role Dotty::Slang::Actions {};
 
     sub lk(Mu \h, \k) {
         nqp::atkey(nqp::findmethod(h, 'hash')(h), k);
@@ -16,17 +16,16 @@ sub EXPORT(*@ops){
 
     for @ops -> $op {
 
-        my $meth_name = 'dotty' ~ $op;
-
-        my $gram_regex = EVAL q|my token dotty:sym«| ~ $op ~ q|» {
+        #add the custom operator to the grammar
+        my $gram_dotty = EVAL q|my token dotty:sym«| ~ $op ~ q|» {
             <sym> <dottyop>
             <O('%methodcall')>
         }|;
 
-        $gram.^add_method( $gram_regex.name,$gram_regex);
+        $gram.^add_method($gram_dotty.name, $gram_dotty);
 
-
-        my $action_meth = EVAL q|my method dotty:sym«| ~ $op ~ q|»(Mu $/ is rw) {
+        #add the custom action to the actions
+        my $action = EVAL q|my method dotty:sym«| ~ $op ~ q|»(Mu $/ is rw) {
             my $past := lk($/,'dottyop').ast;
             my $name := $past.name;
             $past.op('call');
@@ -35,11 +34,11 @@ sub EXPORT(*@ops){
             return $/.'!make'($past);
         }|;
 
-        $role.^add_method( $meth_name, $action_meth);
+        $actions.^add_method( $action.name, $action);
     }
 
     my Mu $MAIN-grammar := nqp::atkey(%*LANG, 'MAIN');
     nqp::bindkey(%*LANG, 'MAIN', $MAIN-grammar.HOW.mixin($MAIN-grammar, $gram));
-    nqp::bindkey(%*LANG, 'MAIN-actions', %*LANG<MAIN-actions>.HOW.mixin(%*LANG<MAIN-actions>, $role));
+    nqp::bindkey(%*LANG, 'MAIN-actions', %*LANG<MAIN-actions>.HOW.mixin(%*LANG<MAIN-actions>, $actions));
     {}
 }

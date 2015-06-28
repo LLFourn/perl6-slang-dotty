@@ -3,7 +3,9 @@
 Make custom method call operators. The arguments you pass to use will
 create a allow you to use those strings as method call operators. When
 one is called it will call an infix with the object it was called on,
-the name of the method and all the
+the name of the method and all the arguments.
+
+comments and suggestions welcome :)
 
 ```perl6
 
