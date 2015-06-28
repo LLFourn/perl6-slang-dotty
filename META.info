@@ -1,0 +1,11 @@
+{
+    "name" : "Slang::Dotty",
+    "version" : "0.1.0",
+    "description" : "add custom method call operators to perl 6",
+    "author" : "LLFourn",
+    "provides" : {
+       "Slang::Dotty" : "lib/Slang/Dotty.pm"
+    },
+    "depends" : [ ],
+    "source-url" : "https://github.com/LLFourn/perl6-slang-dotty"
+}
