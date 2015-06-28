@@ -1,20 +1,27 @@
 # Slang::Dotty
 
 Make custom method call operators. The arguments you pass to use will
-create a allow you to use those strings as method call operators. When
-one is called it will call an infix with the object it was called on,
-the name of the method and all the arguments.
+allow make them method call operators. When perl sees one it will call
+the corresponding infix for it with:
+
+1. The object it was called on
+2. The method name as a string
+3. All the arguments it was called with as is
 
 comments and suggestions welcome :)
 
 ```perl6
 
+#defines the operators
 use Slang::Dotty '~>','<(^_^)>';
 
+#the callbacks -- this one just mimics vanilla '.' method call
 sub infix:«~>» ($obj,$method,|args){
+
     $obj."$method"(|args);
 }
 
+#this one wraps the result in a kirby dance
 sub infix:«<(^_^)>»($obj,$method,|args) {
     q|(>'-')> ^('-')^|
     ~ $obj."$method"(|args)
